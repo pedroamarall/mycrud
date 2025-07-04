@@ -1,0 +1,33 @@
+services:
+  db:
+    image: mysql:8.0.2
+    container_name: mysql_8
+    environment:
+      MYSQL_ROOT_PASSWORD: "teste"
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+
+  node:
+    image: node:18
+    container_name: node
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: sh -c "npm install && npm start"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - nginx
+
+volumes:
+  db_data:
